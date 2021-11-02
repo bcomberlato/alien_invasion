@@ -1,7 +1,8 @@
 import sys
 import pygame
 from bulllet import Bullet
-from pygame.sprite import Sprite
+from alien import Alien
+
 
 """Responde a eventos de pressionamento de teclas e de mouse"""
 def check_events(ai_settings, screen, ship, bullets):
@@ -29,13 +30,13 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
 
-def update_screen(ai_settings, screen, ship, alien, bullets): #as imagens na tela e alterna para a nova tela.
+def update_screen(ai_settings, screen, ship, aliens, bullets): #as imagens na tela e alterna para a nova tela.
     # deixa a tela mais recente vísivel
     screen.fill(ai_settings.bg_color)
     for bullet in bullets.sprites():
         bullet.draw_bullet()#Redesenha todos os projéteis atrás da espaçonave e dos alienígenas
     ship.blitme()
-    alien.blitme()
+    aliens.draw(screen)
     pygame.display.flip()
 
 def update_bullets(bullets):
@@ -47,7 +48,31 @@ def update_bullets(bullets):
         print(len(bullets))
 
 def fire_bullet(ai_settings, screen, ship, bullets):
-    #dispara um novo projétil
+    #Dispara um novo projétil
     if len(bullets) < ai_settings.bullet_allowed:
         new_bullet = Bullet(ai_settings, screen, ship)
         bullets.add(new_bullet)
+
+def get_numbers_aliens_x(ai_settings, alien_width):
+    #Determina o número de alienígenas que cabem em uma linha
+    available_space_x = ai_settings.screen_width - (2 * alien_width)
+    number_aliens_x = int(available_space_x / (2 * alien_width))
+    return number_aliens_x
+
+def create_alien(ai_settings, screen, aliens, alien_number):
+    #Cria um alienígena e o posiciona na linha
+    alien = Alien(ai_settings, screen)
+    alien_width = alien.rect.width
+    alien.x = alien_width + (alien_width * 2 * alien_number)
+    alien.rect.x = alien.x
+    aliens.add(alien)
+
+
+def create_fleet(ai_settings, screen, aliens):
+    #Cria uma frota completa de alienígenas
+    #Cria um alienígena e calcula o número de alienígenas em uma linha
+    alien = Alien(ai_settings, screen)
+    number_aliens_x = get_numbers_aliens_x(ai_settings, alien.rect.width)
+
+    for alien_number in range(number_aliens_x):
+        create_alien(ai_settings, screen, aliens, alien_number)
