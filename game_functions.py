@@ -54,7 +54,7 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button):
+def update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, bullets, play_button):
     #as imagens na tela e alterna para a nova tela.
     # deixa a tela mais recente vísivel
     screen.fill(ai_settings.bg_color)
@@ -64,13 +64,14 @@ def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button
     #Redesenha todos os projéteis atrás da espaçonave e dos alienígenas
     ship.blitme()
     aliens.draw(screen)
+    scoreboard.show_score()
     if not stats.game_active:
         #desenha o botão Play se o jogo estiver inativo
         play_button.draw_button()
     pygame.display.flip()
 
 
-def update_bullets(ai_settings, screen, ship, aliens, bullets):
+def update_bullets(ai_settings, screen, stats, scoreboard, ship, aliens, bullets):
     #Atualiza a posição dos projéteis e se livra dos projéteis antigos
 
     bullets.update()
@@ -78,14 +79,18 @@ def update_bullets(ai_settings, screen, ship, aliens, bullets):
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
-        print(len(bullets))
-    check_bullet_collision(ai_settings, screen, ship, aliens, bullets)
+
+    check_bullet_collision(ai_settings, screen, stats, scoreboard, ship, aliens, bullets)
 
 
-def check_bullet_collision(ai_settings, screen, ship, aliens, bullets):
+def check_bullet_collision(ai_settings, screen, stats, scoreboard, ship, aliens, bullets):
     #Responde a colisões entre projéteis e alienígenas
     #Em caso afirmativo, livra-se do projétil e do alienígena
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    if collisions:
+        for aliens in collisions.values():
+            stats.score += (ai_settings.alien_points * len(aliens))
+            scoreboard.prep_score()
 
     #Destrói projéteis existentes,cria uma nova frota e aumenta a velocidadee do jogo
     if len(aliens) == 0:
