@@ -32,12 +32,14 @@ def check_play_button(ai_settings, screen, stats, scoreboard, play_button, ship,
         #Reinicializa os dados estatísticos do jogo
         stats.game_active = True
 
+        stats.reset_stats()
+
         scoreboard.prep_score()
         scoreboard.prep_high_score()
         scoreboard.prep_level()
         scoreboard.prep_ships()
 
-        stats.reset_stats()
+
 
         aliens.empty()
         bullets.empty()
