@@ -38,8 +38,8 @@ def run_game():
         #observa os eventos de teclado e de mouse
             ship.update()
             gf.update_bullets(ai_settings, screen, stats, scoreboard, ship, aliens, bullets)
-            gf.update_aliens(ai_settings, stats, screen, ship, aliens, bullets)
+            gf.update_aliens(ai_settings, stats, scoreboard, screen, ship, aliens, bullets)
         gf.update_screen(ai_settings, screen, stats, scoreboard, ship, aliens, bullets, play_button)
-        gf.check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)
+        gf.check_events(ai_settings, screen, stats, scoreboard, play_button, ship, aliens, bullets)
 
 run_game()
